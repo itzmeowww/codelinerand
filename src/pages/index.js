@@ -212,7 +212,13 @@ const Index = () => {
       <DarkModeSwitch />
       <Box h="30vh"></Box>
       <Footer>
-        <Text color="grey" fontFamily="mono">
+        <Text
+          fontSize="xs"
+          color="grey"
+          fontFamily="mono"
+          textAlign="center"
+          px="5vw"
+        >
           Code with 💖 by Thanasan Kumdee & Designed Nara Ratchsuwan
         </Text>
       </Footer>
