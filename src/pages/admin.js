@@ -1,4 +1,10 @@
-import { Link as ChakraLink, Spinner, Box, Button } from "@chakra-ui/react";
+import {
+  Link as ChakraLink,
+  Spinner,
+  Box,
+  Button,
+  useToast,
+} from "@chakra-ui/react";
 
 import { Container } from "../components/Container";
 
@@ -16,6 +22,7 @@ import ShowHint from "../components/ShowHint";
 import ShowUser from "../components/ShowUser";
 
 const Admin = () => {
+  const toast = useToast();
   const db = firebase.firestore();
   const [user, loading, error] = useAuthState(firebase.auth());
   const signOut = () =>
@@ -32,6 +39,8 @@ const Admin = () => {
         })
       );
   const Edit = () => {
+    // security 300%
+    const admins = ["klalnwkort4425@gmail.com", "38898@promma.ac.th"];
     if (loading) {
       return <Spinner />;
     } else if (user == undefined) {
@@ -40,7 +49,7 @@ const Admin = () => {
           <Button>Sign In</Button>
         </ChakraLink>
       );
-    } else
+    } else if (admins.includes(user.email))
       return (
         <>
           <Button size="xs" onClick={signOut}>
@@ -52,6 +61,13 @@ const Admin = () => {
           <ShowUser />
         </>
       );
+    else {
+      return (
+        <Button size="xs" onClick={signOut}>
+          Sign Out
+        </Button>
+      );
+    }
   };
   return (
     <Container minH="100vh">

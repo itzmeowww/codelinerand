@@ -26,6 +26,7 @@ const Index = () => {
   const db = firebase.firestore();
   const [user, loading, error] = useAuthState(firebase.auth());
   const [gotHint, setGotHint] = useState(false);
+  const [userHint, setUserHint] = useState("");
   const [waiting, setWaiting] = useState(false);
   const [queue, queueLoading, queueError] = useCollection(
     db.collection("queue").orderBy("timestamp"),
@@ -141,6 +142,7 @@ const Index = () => {
         userList.docs.forEach((doc) => {
           if (user != undefined && doc.id == user.uid) {
             setGotHint(doc.data().gotHint);
+            setUserHint(doc.data().hint);
           }
         });
       }
@@ -164,9 +166,11 @@ const Index = () => {
   const Hint = () => {
     if (gotHint)
       return (
-        <Text colorScheme="yellow" fontSize="xl" fontFamily="mono">
-          "This is your hint"
-        </Text>
+        <Flex bg="yellow.100" p="5px" rounded="md">
+          <Text color="black" fontSize="xl" fontFamily="mono">
+            "{userHint}"
+          </Text>
+        </Flex>
       );
     else return <Button onClick={() => addQueue(user)}>GET A HINT</Button>;
   };
@@ -200,15 +204,17 @@ const Index = () => {
 
   return (
     <Container height="100vh">
-      <Box h="20vh"></Box>
+      <Box h="30vh"></Box>
       <Name />
 
       <Box h="5vh"></Box>
 
       <DarkModeSwitch />
-      <Box h="5vh"></Box>
+      <Box h="30vh"></Box>
       <Footer>
-        <Text color="grey">Made with 💖 by Thanasan Kumdee</Text>
+        <Text color="grey" fontFamily="mono">
+          Code with 💖 by Thanasan Kumdee & Designed Nara Ratchsuwan
+        </Text>
       </Footer>
     </Container>
   );
