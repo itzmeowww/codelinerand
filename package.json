@@ -11,10 +11,16 @@
     "@chakra-ui/react": "^1.4.2",
     "@emotion/react": "^11.0.0",
     "@emotion/styled": "^11.0.0",
+    "firebase": "^8.6.8",
+    "firebase-admin": "^9.9.0",
+    "firebase-queue": "^1.6.1",
     "framer-motion": "^4.0.3",
+    "js-cookie": "^2.2.1",
     "next": "latest",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-firebase-hooks": "^3.0.4",
+    "react-firebaseui": "^5.0.2"
   },
   "license": "MIT"
 }
