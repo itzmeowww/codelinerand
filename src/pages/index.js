@@ -4,6 +4,8 @@ import {
   Spinner,
   Box,
   Button,
+  useToast,
+  Flex,
 } from "@chakra-ui/react";
 
 import { Container } from "../components/Container";
@@ -16,10 +18,15 @@ import firebase from "../firebase/initFirebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection, useDocument } from "react-firebase-hooks/firestore";
 import { useEffect, useState } from "react";
+
+import Link from "next/link";
 const Index = () => {
+  const toast = useToast();
+
   const db = firebase.firestore();
   const [user, loading, error] = useAuthState(firebase.auth());
   const [gotHint, setGotHint] = useState(false);
+  const [waiting, setWaiting] = useState(false);
   const [queue, queueLoading, queueError] = useCollection(
     db.collection("queue").orderBy("timestamp"),
     {}
@@ -37,7 +44,7 @@ const Index = () => {
     if (userList.empty) return false;
     else {
       userList.docs.forEach((doc) => {
-        if (doc.id === user.uid) {
+        if (user != undefined && doc.id === user.uid) {
           have = true;
         }
       });
@@ -50,12 +57,13 @@ const Index = () => {
   };
 
   const setUser = async (user, gotHint, hint, answer) => {
-    await db.collection("user").doc(user.uid).set({
-      name: user.displayName,
-      gotHint: gotHint,
-      hint: hint,
-      answer: answer,
-    });
+    if (user != undefined)
+      await db.collection("user").doc(user.uid).set({
+        name: user.displayName,
+        gotHint: gotHint,
+        hint: hint,
+        answer: answer,
+      });
   };
 
   const showQueue = () => {
@@ -78,11 +86,24 @@ const Index = () => {
   };
 
   const addQueue = async (user) => {
-    let queueTime = firebase.firestore.FieldValue.serverTimestamp();
-    let isIn = isInQueue(user);
-    console.log(isIn);
-    if (!isIn) {
-      await db.collection("queue").add({ uid: user.uid, timestamp: queueTime });
+    if (hintList.empty) {
+      toast({
+        title: "Error!",
+        description: "No hint available, please contact admin",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else {
+      let queueTime = firebase.firestore.FieldValue.serverTimestamp();
+      let isIn = isInQueue(user);
+      console.log(isIn);
+      if (!isIn) {
+        await db
+          .collection("queue")
+          .add({ uid: user.uid, timestamp: queueTime });
+        setWaiting(true);
+      }
     }
   };
 
@@ -94,12 +115,11 @@ const Index = () => {
   };
 
   useEffect(async () => {
-    if (!queueLoading && !loading && !hintListLoading)
+    if (!queueLoading && !loading && !hintListLoading && waiting && !gotHint)
       if (queue.empty) {
         console.log("queue is empty");
       } else {
-        if (queue.docs[0].data().uid == user.uid) {
-          console.log("getting hints");
+        if (user != undefined && queue.docs[0].data().uid == user.uid) {
           let idx = Math.floor(Math.random() * hintList.docs.length);
           if (idx >= hintList.docs.length) idx = hintList.docs.length - 1;
           await setUser(
@@ -119,7 +139,7 @@ const Index = () => {
       if (!haveUser(user)) await addUser(user);
       else {
         userList.docs.forEach((doc) => {
-          if (doc.id == user.uid) {
+          if (user != undefined && doc.id == user.uid) {
             setGotHint(doc.data().gotHint);
           }
         });
@@ -127,24 +147,69 @@ const Index = () => {
     }
   }, [userList, userListLoading, loading]);
 
-  return (
-    <Container height="100vh">
-      <Box h="20vh"></Box>
-      <Text colorScheme="whiteAlpha" fontSize="3xl" fontFamily="mono">
-        {loading ? <Spinner /> : "Hi! " + user.displayName}
-      </Text>
-      <Box h="5vh"></Box>
-      {gotHint ? (
+  const signOut = () =>
+    firebase
+      .auth()
+      .signOut()
+      .then(
+        toast({
+          title: "Signed out!",
+          description: "You've been signed out",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        })
+      );
+
+  const Hint = () => {
+    if (gotHint)
+      return (
         <Text colorScheme="yellow" fontSize="xl" fontFamily="mono">
           "This is your hint"
         </Text>
-      ) : (
-        <Button onClick={() => addQueue(user)}>GET A HINT</Button>
-      )}
+      );
+    else return <Button onClick={() => addQueue(user)}>GET A HINT</Button>;
+  };
+
+  const Name = () => {
+    if (loading) {
+      return <Spinner />;
+    }
+    if (user == undefined) {
+      return (
+        <ChakraLink as={Link} href="/auth">
+          <Button>Sign In</Button>
+        </ChakraLink>
+      );
+    } else {
+      return (
+        <Flex flexDir="column" align="center" justify="center">
+          <Text colorScheme="whiteAlpha" fontSize="3xl" fontFamily="mono">
+            {loading ? <Spinner /> : "Hi! " + user.displayName}
+          </Text>
+
+          <Button size="xs" onClick={signOut}>
+            Sign Out
+          </Button>
+          <Box h="5vh"></Box>
+          <Hint />
+        </Flex>
+      );
+    }
+  };
+
+  return (
+    <Container height="100vh">
+      <Box h="20vh"></Box>
+      <Name />
+
+      <Box h="5vh"></Box>
 
       <DarkModeSwitch />
-
-      <Footer></Footer>
+      <Box h="5vh"></Box>
+      <Footer>
+        <Text color="grey">Made with 💖 by Thanasan Kumdee</Text>
+      </Footer>
     </Container>
   );
 };
