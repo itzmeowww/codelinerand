@@ -7,9 +7,8 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { useState, useEffect } from "react";
 
 const ShowHint = () => {
-  const toast = useToast();
   const db = firebase.firestore();
-  const [user, loading, error] = useAuthState(firebase.auth());
+
   const [userData, userDataLoading, useDataError] = useCollection(
     db.collection("user"),
     {}

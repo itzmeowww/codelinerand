@@ -14,7 +14,7 @@ import { Footer } from "../components/Footer";
 import firebase from "../firebase/initFirebase";
 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollection } from "react-firebase-hooks/firestore";
+
 import Link from "next/link";
 
 import AddHint from "../components/AddHint";
