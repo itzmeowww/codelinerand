@@ -1,10 +1,18 @@
-import { Text, Flex, Box, Checkbox, useToast } from "@chakra-ui/react";
+import {
+  Text,
+  Flex,
+  Box,
+  Checkbox,
+  useToast,
+  CloseButton,
+} from "@chakra-ui/react";
 
 import firebase from "../firebase/initFirebase";
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { useState, useEffect } from "react";
+import { DocumentContext } from "next/dist/next-server/lib/document-context";
 
 const ShowHint = () => {
   const db = firebase.firestore();
@@ -14,7 +22,9 @@ const ShowHint = () => {
     {}
   );
   const [userList, setUserList] = useState([]);
-
+  const removeUser = async (id) => {
+    await db.collection("user").doc(id).delete();
+  };
   useEffect(() => {
     if (!userDataLoading) {
       const newUserList = [];
@@ -24,6 +34,7 @@ const ShowHint = () => {
           hint: doc.data().hint,
           answer: doc.data().answer,
           gotHint: doc.data().gotHint,
+          id: doc.id,
         });
       });
       setUserList(newUserList);
@@ -88,6 +99,11 @@ const ShowHint = () => {
             <Text w="40%" pl="5px">
               {u.answer}
             </Text>
+            <CloseButton
+              onClick={() => {
+                removeUser(u.id);
+              }}
+            />
           </Flex>
         );
       })}
