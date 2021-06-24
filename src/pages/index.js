@@ -200,11 +200,14 @@ const Index = () => {
           <MotionImg w="250px" src="./3/Flower.PNG" />
         </MotionFlex>
       );
-    else if (playAni) {
+    else if (playAni && !gotHint) {
+      setTimeout(() => {
+        addQueue(user);
+      }, 2000);
       return (
         <Box position="absolute" zIndex="2" pb="90px">
           <video width="250px" autoPlay preload>
-            <source src="./2/Out.mp4" type="video/mp4" />
+            <source src="./2/In.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           {/* <MotionImg
@@ -214,6 +217,18 @@ const Index = () => {
             animate={{ y: "-10px" }}
             transition={{ yoyo: Infinity, duration: 2 }}
           /> */}
+        </Box>
+      );
+    } else if (playAni && gotHint) {
+      setTimeout(() => {
+        setPlayAni(false);
+      }, 2000);
+      return (
+        <Box position="absolute" zIndex="2" pb="90px">
+          <video width="250px" autoPlay preload>
+            <source src="./2/Out.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
         </Box>
       );
     } else
@@ -236,19 +251,36 @@ const Index = () => {
 
   const Name = () => {
     if (loading) {
-      return <Spinner />;
+      return <Spinner position="absolute" left="10px" top="10px" zIndex="10" />;
     }
     if (user == undefined) {
       return (
-        <ChakraLink as={Link} href="/auth">
-          <Button>Sign In</Button>
+        <ChakraLink
+          as={Link}
+          href="/auth"
+          position="absolute"
+          zIndex="5"
+          left="10px"
+          top="10px"
+        >
+          <Button position="absolute" zIndex="5" left="10px" top="10px">
+            Sign In
+          </Button>
         </ChakraLink>
       );
     } else {
       return (
-        <Flex flexDir="column" align="center" justify="center">
-          <Text colorScheme="whiteAlpha" fontSize="3xl" fontFamily="mono">
-            {loading ? <Spinner /> : "Hi! " + user.displayName}
+        <Flex
+          flexDir="column"
+          align="flex-start"
+          justify="flex-start"
+          position="absolute"
+          zIndex="5"
+          left="10px"
+          top="10px"
+        >
+          <Text colorScheme="whiteAlpha" fontSize="sm" fontFamily="mono">
+            {user.displayName}
           </Text>
 
           <Button size="xs" onClick={signOut}>
