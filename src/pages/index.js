@@ -23,12 +23,15 @@ import { useCollection, useDocument } from "react-firebase-hooks/firestore";
 import { useEffect, useState } from "react";
 
 import Link from "next/link";
+import Head from "next/head";
 const Index = () => {
   const toast = useToast();
   const MotionImg = motion(Image);
+  const MotionFlex = motion(Flex);
   const db = firebase.firestore();
   const [user, loading, error] = useAuthState(firebase.auth());
   const [gotHint, setGotHint] = useState(false);
+  const [playAni, setPlayAni] = useState(false);
   const [userHint, setUserHint] = useState("");
   const [waiting, setWaiting] = useState(false);
   const [queue, queueLoading, queueError] = useCollection(
@@ -169,13 +172,66 @@ const Index = () => {
   const Hint = () => {
     if (gotHint)
       return (
-        <Flex bg="yellow.100" p="5px" rounded="md">
-          <Text color="black" fontSize="xl" fontFamily="mono">
-            "{userHint}"
-          </Text>
-        </Flex>
+        <MotionFlex
+          maxW="100%"
+          position="absolute"
+          zIndex="2"
+          pb="130px"
+          align="center"
+          justify="center"
+          flexDir="column"
+          animate={{ y: "-10px" }}
+          transition={{ yoyo: Infinity, duration: 2 }}
+        >
+          <Box position="absolute" zIndex="2" pb="100px">
+            <Text
+              color="black"
+              fontSize="xl"
+              fontFamily="mono"
+              transform="rotate(-7deg)"
+              bgColor="white"
+              px="5px"
+              rounded="md"
+              opacity="0.7"
+            >
+              "{userHint}"
+            </Text>
+          </Box>
+          <MotionImg w="250px" src="./3/Flower.PNG" />
+        </MotionFlex>
       );
-    else return <Button onClick={() => addQueue(user)}>GET A HINT</Button>;
+    else if (playAni) {
+      return (
+        <Box position="absolute" zIndex="2" pb="90px">
+          <video width="250px" autoPlay preload>
+            <source src="./2/Out.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          {/* <MotionImg
+            cursor="pointer"
+            w="250px"
+            src="./2/In.gif"
+            animate={{ y: "-10px" }}
+            transition={{ yoyo: Infinity, duration: 2 }}
+          /> */}
+        </Box>
+      );
+    } else
+      return (
+        <Box position="absolute" zIndex="2" pb="130px">
+          <MotionImg
+            cursor="pointer"
+            w="250px"
+            src="./1/Flower.PNG"
+            animate={{ y: "-10px" }}
+            transition={{ yoyo: Infinity, duration: 2 }}
+            onClick={() => {
+              setPlayAni(true);
+              // addQueue(user)
+            }}
+          />
+        </Box>
+      );
   };
 
   const Name = () => {
@@ -199,7 +255,6 @@ const Index = () => {
             Sign Out
           </Button>
           <Box h="5vh"></Box>
-          <Hint />
         </Flex>
       );
     }
@@ -207,6 +262,9 @@ const Index = () => {
 
   return (
     <Container height="100vh">
+      <Head>
+        <title>Sai Sam Parn 45614</title>
+      </Head>
       <Flex
         w="100%"
         h="100%"
@@ -228,24 +286,16 @@ const Index = () => {
           <MotionImg
             position="absolute"
             zIndex="3"
-            w="300px"
+            w="250px"
             src="./Face.PNG"
           />
-          <Box position="absolute" zIndex="2" pb="150px">
-            <MotionImg
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 1.2 }}
-              w="300px"
-              src="./1/Flower.PNG"
-              animate={{ y: "10px" }}
-              transition={{ yoyo: Infinity, duration: 2 }}
-            />
-          </Box>
+          <Hint />
+
           <MotionImg
             ml="75px"
             position="absolute"
             zIndex="1"
-            w="300px"
+            w="250px"
             src="./1/Shadow.PNG"
           />
         </Flex>
@@ -256,7 +306,7 @@ const Index = () => {
 
         <DarkModeSwitch />
         <Box h="30vh"></Box>
-        <Footer>
+        <Footer position="absolute" top="85vh" zIndex="10">
           <Text
             fontSize="xs"
             color="white"

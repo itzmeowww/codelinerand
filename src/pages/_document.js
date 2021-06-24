@@ -5,9 +5,8 @@ export default class Document extends NextDocument {
   render() {
     return (
       <Html>
-        <Head>
-          <title>Sai Sam Parn 45614</title>
-        </Head>
+        <Head />
+
         <body>
           {/* Make Color mode to persists when you refresh the page. */}
           <ColorModeScript />
