@@ -161,8 +161,8 @@ const Index = () => {
       else {
         userList.docs.forEach((doc) => {
           if (user != undefined && doc.id == user.uid) {
-            if (playAniIn) {
-              sleep(5000);
+            if (playAniIn && doc.data().gotHint) {
+              sleep(3000);
               setPlayAniIn(false);
             }
             setGotHint(doc.data().gotHint);
