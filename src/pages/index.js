@@ -6,7 +6,10 @@ import {
   Button,
   useToast,
   Flex,
+  Image,
 } from "@chakra-ui/react";
+
+import { motion } from "framer-motion";
 
 import { Container } from "../components/Container";
 
@@ -22,7 +25,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 const Index = () => {
   const toast = useToast();
-
+  const MotionImg = motion(Image);
   const db = firebase.firestore();
   const [user, loading, error] = useAuthState(firebase.auth());
   const [gotHint, setGotHint] = useState(false);
@@ -204,24 +207,66 @@ const Index = () => {
 
   return (
     <Container height="100vh">
-      <Box h="30vh"></Box>
-      <Name />
-
-      <Box h="5vh"></Box>
-
-      <DarkModeSwitch />
-      <Box h="30vh"></Box>
-      <Footer>
-        <Text
-          fontSize="xs"
-          color="grey"
-          fontFamily="mono"
-          textAlign="center"
-          px="5vw"
+      <Flex
+        w="100%"
+        h="100%"
+        bgImg="./BG.PNG"
+        flexDir="column"
+        align="center"
+        justify="center"
+        bgPos="center"
+        bgSize="auto 100%"
+      >
+        <Flex
+          position="absolute"
+          h="100vh"
+          w="100vw"
+          zIndex="5"
+          align="flex-end"
+          justify="center"
         >
-          Code with 💖 by Thanasan Kumdee & Designed Nara Ratchsuwan
-        </Text>
-      </Footer>
+          <MotionImg
+            position="absolute"
+            zIndex="3"
+            w="300px"
+            src="./Face.PNG"
+          />
+          <Box position="absolute" zIndex="2" pb="150px">
+            <MotionImg
+              whileHover={{ scale: 1.2 }}
+              w="300px"
+              src="./1/Flower.PNG"
+              animate={{ y: "10px" }}
+              transition={{ yoyo: Infinity, duration: 2 }}
+            />
+          </Box>
+          <MotionImg
+            ml="75px"
+            position="absolute"
+            zIndex="1"
+            w="300px"
+            src="./1/Shadow.PNG"
+          />
+        </Flex>
+        <Box h="30vh"></Box>
+        <Name />
+
+        <Box h="5vh"></Box>
+
+        <DarkModeSwitch />
+        <Box h="30vh"></Box>
+        <Footer>
+          <Text
+            fontSize="xs"
+            color="white"
+            fontFamily="mono"
+            textAlign="center"
+            px="5vw"
+          >
+            Code with 💖 by Thanasan Kumdee & Designed Nara Ratchsuwan
+          </Text>
+        </Footer>
+      </Flex>
     </Container>
   );
 };

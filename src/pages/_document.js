@@ -6,7 +6,7 @@ export default class Document extends NextDocument {
     return (
       <Html>
         <Head>
-          <title>CODELINE</title>
+          <title>Sai Sam Parn 45614</title>
         </Head>
         <body>
           {/* Make Color mode to persists when you refresh the page. */}

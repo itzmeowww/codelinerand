@@ -33,7 +33,13 @@ const ShowHint = () => {
   }, [hint, hintLoading]);
 
   return (
-    <Flex w="170px" flexDir="column" align="center" justify="center">
+    <Flex
+      w="300px"
+      maxW="80vw"
+      flexDir="column"
+      align="center"
+      justify="center"
+    >
       <Box h="10vh"></Box>
       <Text fontFamily="mono" fontSize="3xl">
         Hints

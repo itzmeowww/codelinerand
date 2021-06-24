@@ -31,7 +31,13 @@ const ShowHint = () => {
   }, [userData, userDataLoading]);
 
   return (
-    <Flex w="600px" flexDir="column" align="center" justify="center">
+    <Flex
+      w="600px"
+      maxW="80vw"
+      flexDir="column"
+      align="center"
+      justify="center"
+    >
       <Box h="10vh"></Box>
       <Text fontFamily="mono" fontSize="3xl">
         Users
@@ -67,11 +73,12 @@ const ShowHint = () => {
             p="10px"
             color="black"
             fontFamily="mono"
+            fontSize={["xs", "md"]}
             w="100%"
             align="center"
             justify="flex-start"
           >
-            <Text w="40%" fontSize="md" textOverflow="ellipsis">
+            <Text w="40%" textOverflow="ellipsis">
               {u.name}
             </Text>
             <Text w="20%" pl="5px">
