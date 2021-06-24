@@ -234,6 +234,7 @@ const Index = () => {
           <Box position="absolute" zIndex="2" pb="150px">
             <MotionImg
               whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 1.2 }}
               w="300px"
               src="./1/Flower.PNG"
               animate={{ y: "10px" }}
