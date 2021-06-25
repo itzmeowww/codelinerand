@@ -35,7 +35,7 @@ const Index = () => {
   const [playAniOut, setPlayAniOut] = useState(false);
   const [userHint, setUserHint] = useState("");
   const [waiting, setWaiting] = useState(false);
-
+  const [canClick, setCanClick] = useState(false);
   const [timing, setTiming] = useState(false);
   const [queue, queueLoading, queueError] = useCollection(
     db.collection("queue").orderBy("timestamp"),
@@ -165,6 +165,7 @@ const Index = () => {
                 }, 1400);
               }
             } else {
+              if (!canClick) setCanClick(true);
               setGotHint(doc.data().gotHint);
             }
           }
@@ -245,8 +246,10 @@ const Index = () => {
             transition={{ yoyo: Infinity, duration: 2 }}
             onClick={() => {
               if (!playAniIn) setPlayAniIn(true);
-
-              addQueue(user);
+              if (canClick) {
+                setCanClick(false);
+                addQueue(user);
+              }
             }}
           />
         </Box>
