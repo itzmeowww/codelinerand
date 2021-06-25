@@ -5,6 +5,7 @@ import {
   Checkbox,
   useToast,
   CloseButton,
+  color,
 } from "@chakra-ui/react";
 
 import firebase from "../firebase/initFirebase";
@@ -23,6 +24,16 @@ const ShowHint = () => {
   );
   const [userList, setUserList] = useState([]);
   const removeUser = async (id) => {
+    // db.collection("user")
+    //   .doc(id)
+    //   .get()
+    //   .then(async (doc) => {
+    //     console.log(doc.data());
+    //     await db
+    //       .collection("hint")
+    //       .add({ hint: doc.data().hint, name: doc.data().answer });
+    //   });
+
     await db.collection("user").doc(id).delete();
   };
   useEffect(() => {

@@ -35,6 +35,8 @@ const Index = () => {
   const [playAniOut, setPlayAniOut] = useState(false);
   const [userHint, setUserHint] = useState("");
   const [waiting, setWaiting] = useState(false);
+
+  const [timing, setTiming] = useState(false);
   const [queue, queueLoading, queueError] = useCollection(
     db.collection("queue").orderBy("timestamp"),
     {}
@@ -122,14 +124,6 @@ const Index = () => {
     });
   };
 
-  const sleep = (milliseconds) => {
-    const date = Date.now();
-    let currentDate = null;
-    do {
-      currentDate = Date.now();
-    } while (currentDate - date < milliseconds);
-  };
-
   useEffect(async () => {
     if (!queueLoading && !loading && !hintListLoading && waiting && !gotHint)
       if (queue.empty) {
@@ -146,11 +140,6 @@ const Index = () => {
           );
           await db.collection("hint").doc(hintList.docs[idx].id).delete();
           removeQueue(user);
-          if (playAniIn) {
-            sleep(5000);
-            setPlayAniIn(false);
-            setPlayAniOut(true);
-          }
         }
       }
   }, [queue, queueLoading, loading, hintListLoading]);
@@ -161,12 +150,23 @@ const Index = () => {
       else {
         userList.docs.forEach((doc) => {
           if (user != undefined && doc.id == user.uid) {
-            if (playAniIn && doc.data().gotHint) {
-              sleep(3000);
-              setPlayAniIn(false);
+            if (doc.data().gotHint) {
+              if (!timing) {
+                setTiming(true);
+                setTimeout(() => {
+                  setPlayAniOut(true);
+                  setTimeout(() => {
+                    setPlayAniOut(false);
+                    setPlayAniIn(false);
+
+                    setGotHint(doc.data().gotHint);
+                    setUserHint(doc.data().hint);
+                  }, 1400);
+                }, 1400);
+              }
+            } else {
+              setGotHint(doc.data().gotHint);
             }
-            setGotHint(doc.data().gotHint);
-            setUserHint(doc.data().hint);
           }
         });
       }
@@ -189,14 +189,22 @@ const Index = () => {
 
   const Hint = () => {
     if (playAniOut) {
-      sleep(5000);
-      setPlayAniOut(false);
+      console.log("hint 1");
       return (
         <Box position="absolute" zIndex="2" pb="90px">
           <MotionImg w="250px" src="./2/Out.GIF" />
         </Box>
       );
-    } else if (gotHint)
+    } else if (playAniIn) {
+      console.log("hint 2");
+      return (
+        <Box position="absolute" zIndex="2" pb="90px">
+          <MotionImg w="250px" src="./2/In.gif" />
+        </Box>
+      );
+    } else if (gotHint) {
+      console.log("hint 3");
+
       return (
         <MotionFlex
           maxW="100%"
@@ -226,12 +234,6 @@ const Index = () => {
           <MotionImg w="250px" src="./3/Flower.PNG" />
         </MotionFlex>
       );
-    else if (playAniIn) {
-      return (
-        <Box position="absolute" zIndex="2" pb="90px">
-          <MotionImg w="250px" src="./2/In.gif" />
-        </Box>
-      );
     } else
       return (
         <Box position="absolute" zIndex="2" pb="130px">
@@ -242,7 +244,8 @@ const Index = () => {
             animate={{ y: "-10px" }}
             transition={{ yoyo: Infinity, duration: 2 }}
             onClick={() => {
-              setPlayAniIn(true);
+              if (!playAniIn) setPlayAniIn(true);
+
               addQueue(user);
             }}
           />
@@ -329,7 +332,7 @@ const Index = () => {
             position="absolute"
             zIndex="1"
             w="250px"
-            src="./1/Shadow.PNG"
+            src={playAniOut || playAniIn ? "./2/Shadow.PNG" : "./1/Shadow.PNG"}
           />
         </Flex>
         <Box h="30vh"></Box>
