@@ -278,22 +278,28 @@ const Index = () => {
     } else {
       return (
         <Flex
-          flexDir="column"
+          flexDir="row"
           align="flex-start"
-          justify="flex-start"
+          justify="flex-end"
           position="absolute"
           zIndex="5"
           left="10px"
           top="10px"
+          w="95%"
         >
-          <Text colorScheme="whiteAlpha" fontSize="sm" fontFamily="mono">
+          <Text
+            colorScheme="whiteAlpha"
+            fontSize="sm"
+            fontFamily="mono"
+            mr="5px"
+            pt="3px"
+          >
             {user.displayName}
           </Text>
 
           <Button size="xs" onClick={signOut}>
             Sign Out
           </Button>
-          <Box h="5vh"></Box>
         </Flex>
       );
     }
@@ -343,7 +349,7 @@ const Index = () => {
 
         <Box h="5vh"></Box>
 
-        <DarkModeSwitch />
+        {/* <DarkModeSwitch /> */}
         <Box h="30vh"></Box>
         <Footer position="absolute" top="85vh" zIndex="10">
           <Text
