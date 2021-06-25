@@ -24,7 +24,9 @@ import { useEffect, useState } from "react";
 
 import Link from "next/link";
 import Head from "next/head";
+import { useRouter } from "next/router";
 const Index = () => {
+  const router = useRouter();
   const toast = useToast();
   const MotionImg = motion(Image);
   const MotionFlex = motion(Flex);
@@ -145,7 +147,7 @@ const Index = () => {
   }, [queue, queueLoading, loading, hintListLoading]);
 
   useEffect(async () => {
-    if (!loading && !userListLoading) {
+    if (user != undefined && !loading && !userListLoading) {
       if (!haveUser(user)) await addUser(user);
       else {
         userList.docs.forEach((doc) => {
@@ -320,37 +322,56 @@ const Index = () => {
         bgPos="center"
         bgSize="auto 100%"
       >
-        <Flex
-          position="absolute"
-          h="100vh"
-          w="100vw"
-          zIndex="5"
-          align="flex-end"
-          justify="center"
-        >
-          <MotionImg
+        {user == undefined ? (
+          <ChakraLink
+            as={Link}
+            href="/auth"
             position="absolute"
-            zIndex="3"
-            w="250px"
-            src="./Face.PNG"
-          />
-          <Hint />
+            zIndex="5"
+            left="10px"
+            top="10px"
+          >
+            <Button position="absolute" zIndex="5" left="10px" top="10px">
+              Sign In
+            </Button>
+          </ChakraLink>
+        ) : (
+          <>
+            <Flex
+              position="absolute"
+              h="100vh"
+              w="100vw"
+              zIndex="5"
+              align="flex-end"
+              justify="center"
+            >
+              <MotionImg
+                position="absolute"
+                zIndex="3"
+                w="250px"
+                src="./Face.PNG"
+              />
+              <Hint />
 
-          <MotionImg
-            ml="75px"
-            position="absolute"
-            zIndex="1"
-            w="250px"
-            src={playAniOut || playAniIn ? "./2/Shadow.PNG" : "./1/Shadow.PNG"}
-          />
-        </Flex>
-        <Box h="30vh"></Box>
-        <Name />
+              <MotionImg
+                ml="75px"
+                position="absolute"
+                zIndex="1"
+                w="250px"
+                src={
+                  playAniOut || playAniIn ? "./2/Shadow.PNG" : "./1/Shadow.PNG"
+                }
+              />
+            </Flex>
+            <Box h="30vh"></Box>
+            <Name />
 
-        <Box h="5vh"></Box>
+            <Box h="5vh"></Box>
 
-        {/* <DarkModeSwitch /> */}
-        <Box h="30vh"></Box>
+            {/* <DarkModeSwitch /> */}
+            <Box h="30vh"></Box>
+          </>
+        )}
         <Footer position="absolute" top="85vh" zIndex="10">
           <Text
             fontSize="xs"
